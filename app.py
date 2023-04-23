@@ -1,6 +1,9 @@
 import csv
 import json
 import pandas as pd
+from apistar import App, Route, types, validators
+from apistar.http import JSONResponse
+
 
 def clean_dataset():
     data = pd.read_csv('marvel.csv')
@@ -27,10 +30,62 @@ def load_data() -> dict:
         
         return {data['page_id']: data for data in content}
 
+
 clean_dataset()
 convert_csv_to_json()
 dataset = load_data()
+
 CHARACTER_NOT_FOUND = 'Character not found'
+CHARACTER = set([character['name'] for character in dataset.values()])
+CHARACTER_ID = set([url['urlslug'] for url in dataset.values()])
+PAGE_ID = set([id_marvel['page_id'] for id_marvel in dataset.values()])
+
+# Definition
+class MarvelCharacter(types.Type):
+    page_id = validators.Integer(allow_null=True)
+    name = validators.String(enum=list(CHARACTER))
+    urlslug = validators.String(max_length=100)
+    id = validators.String(allow_null=True)
+    align = validators.String(max_length=100)
+    eye = validators.String(max_length=50)
+    hair = validators.String(max_length=50)
+    sex = validators.String(max_length=15)
+    gsm = validators.String(allow_null=True)
+    alive = validators.String(max_length=50)
+    appearances = validators.String(max_length=10)
+    first_appearance = validators.String(max_length=8)
+    year = validators.String(max_length=8)
 
 
+# API Methods
+def list_character() -> list:
+    return [data for data in dataset.items()]
 
+def create_character(marvel_character: MarvelCharacter) -> JSONResponse:
+    pass
+
+def get_character(character_id: int) -> JSONResponse:
+    pass
+
+def update_character(character_id: int, character: MarvelCharacter) -> JSONResponse:
+    pass
+
+def delete_character(character_id: int) -> JSONResponse:
+    pass
+
+
+# Routes
+routes = [
+    Route('/', method='GET', handler=list_character),
+    Route('/', method='POST', handler=create_character),
+    Route('/{character_id}', method='GET', handler=get_character),
+    Route('/{character_id}', method='PUT', handler=update_character),
+    Route('/{character_id}', method='DELETE', handler=delete_character)
+]
+
+
+app = App(routes=routes)
+
+
+if __name__ == '__main__':
+    app.serve('127.0.0.1', 5000, debug=True)
