@@ -83,22 +83,11 @@ def get_character(character_id: str) -> JSONResponse:
     return JSONResponse(character, 200)
 
 
-    
-
-def update_character(character_id: int, character: MarvelCharacter) -> JSONResponse:
-    pass
-
-def delete_character(character_id: int) -> JSONResponse:
-    pass
-
-
 # Routes
 routes = [
     Route('/', method='GET', handler=list_character),
     Route('/', method='POST', handler=create_character),
     Route('/{character_id}', method='GET', handler=get_character),
-    Route('/{character_id}', method='PUT', handler=update_character),
-    Route('/{character_id}', method='DELETE', handler=delete_character)
 ]
 
 
