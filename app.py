@@ -62,8 +62,15 @@ class MarvelCharacter(types.Type):
 def list_character() -> list:
     return [data for data in dataset.items()]
 
+
 def create_character(marvel_character: MarvelCharacter) -> JSONResponse:
-    pass
+    character_id: int = len(dataset) + 1
+    character = dataset.get(character_id)
+    dataset[character_id] = marvel_character
+
+    return JSONResponse(MarvelCharacter(marvel_character), 201)
+
+    
 
 def get_character(character_id: str) -> JSONResponse:
     character = dataset.get(character_id)
