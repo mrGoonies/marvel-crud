@@ -17,6 +17,7 @@ def load_data() -> list:
 
 clean_dataset()
 dataset = load_data()
+CHARACTER_NOT_FOUND = 'Character not found'
 
 
 
